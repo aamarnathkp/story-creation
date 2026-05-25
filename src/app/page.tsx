@@ -8,15 +8,38 @@ import { useState } from 'react';
 import { useAudio } from '@/hooks/useAudio';
 
 export default function Home() {
-  const { selectedEmojis, clearEmojis } = useStoryStore();
+  const { 
+    selectedEmojis, 
+    clearEmojis, 
+    getCachedStory, 
+    cacheStory, 
+    incrementUsage, 
+    isLimitReached 
+  } = useStoryStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const [story, setStory] = useState<{ title: string; content: string } | null>(null);
   const { initAudio, playSuccess } = useAudio();
 
   const handleGenerate = async () => {
-    if (selectedEmojis.length < 1) return;
+    if (selectedEmojis.length < 3) return;
     
     initAudio();
+
+    // 1. Check local cache first
+    const cached = getCachedStory(selectedEmojis);
+    if (cached) {
+      playSuccess();
+      setStory(cached);
+      return;
+    }
+
+    // 2. Check daily rate limit
+    if (isLimitReached()) {
+      setShowLimitModal(true);
+      return;
+    }
+    
     playSuccess();
     setIsLoading(true);
     try {
@@ -30,9 +53,16 @@ export default function Home() {
       if (data.error) {
         console.error(data.error);
         // Show mock if error
-        if (data.mock) setStory({ title: data.title, content: data.content });
+        if (data.mock) {
+          const mockStory = { title: data.title, content: data.content };
+          setStory(mockStory);
+          cacheStory(selectedEmojis, mockStory);
+          incrementUsage();
+        }
       } else {
         setStory(data);
+        cacheStory(selectedEmojis, data);
+        incrementUsage();
       }
     } catch (error) {
       console.error('Failed to generate story:', error);
@@ -143,6 +173,47 @@ export default function Home() {
             content={story.content} 
             onExit={() => setStory(null)} 
           />
+        )}
+      </AnimatePresence>
+
+      {/* Rate Limit Modal */}
+      <AnimatePresence>
+        {showLimitModal && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLimitModal(false)}
+              className="absolute inset-0 bg-indigo-950/40 backdrop-blur-md"
+            />
+            
+            {/* Card */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="bg-white rounded-3xl sm:rounded-4xl border-4 border-indigo-100 shadow-2xl p-6 sm:p-8 max-w-sm w-full text-center relative z-10 space-y-6"
+            >
+              <div className="text-6xl animate-bounce">😴✨</div>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black text-indigo-950">
+                  Wand is Sleeping!
+                </h3>
+                <p className="text-indigo-900/60 font-medium text-sm leading-relaxed">
+                  Your magic wand did a lot of work today. Let's rest the wand and make new stories tomorrow!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="w-full bg-indigo-500 hover:bg-indigo-600 active:scale-95 transition-all text-white py-3 rounded-2xl font-black text-lg shadow-lg shadow-indigo-100"
+              >
+                Okay! 🚀
+              </button>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </main>

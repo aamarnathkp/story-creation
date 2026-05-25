@@ -46,10 +46,10 @@ export function StoryViewer({ title, content, onExit }: StoryViewerProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-[#FDFBF7] flex flex-col p-8 sm:p-12 md:p-16 overflow-y-auto select-none"
+      className="fixed inset-0 z-[100] bg-[#FDFBF7] flex flex-col px-6 py-4 sm:p-12 md:p-16 overflow-y-auto select-none"
     >
-      <div className="max-w-3xl mx-auto w-full space-y-12 py-12 pb-32">
-        <h1 className="text-4xl sm:text-5xl font-black text-indigo-950 leading-tight">
+      <div className="max-w-3xl mx-auto w-full space-y-12 pt-8 pb-32 sm:pt-12">
+        <h1 className="text-4xl sm:text-5xl font-black text-indigo-950 leading-tight pr-14 sm:pr-0">
           {title}
         </h1>
         
@@ -66,9 +66,9 @@ export function StoryViewer({ title, content, onExit }: StoryViewerProps) {
       </div>
 
       {/* Adult-Gated Exit Button */}
-      <div className="fixed bottom-12 right-12 flex flex-col items-center gap-3">
+      <div className="fixed top-4 right-4 sm:top-10 sm:right-10 flex flex-col items-center gap-2 z-[110]">
         <div className="relative">
-          <svg className="w-16 h-16 transform -rotate-90">
+          <svg className="w-12 h-12 sm:w-16 sm:h-16 transform -rotate-90" viewBox="0 0 64 64">
             <circle
               cx="32"
               cy="32"
@@ -76,7 +76,7 @@ export function StoryViewer({ title, content, onExit }: StoryViewerProps) {
               stroke="currentColor"
               strokeWidth="4"
               fill="transparent"
-              className="text-indigo-100"
+              className="text-indigo-100/70"
             />
             <circle
               cx="32"
@@ -99,10 +99,10 @@ export function StoryViewer({ title, content, onExit }: StoryViewerProps) {
             className="absolute inset-0 flex items-center justify-center text-indigo-500 hover:scale-110 active:scale-95 transition-transform"
             aria-label="Hold to exit"
           >
-            <span className="text-2xl">✕</span>
+            <span className="text-xl sm:text-2xl font-bold">✕</span>
           </button>
         </div>
-        <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest">
+        <p className="text-[10px] sm:text-xs font-bold text-indigo-300 uppercase tracking-widest text-center">
           Hold to exit
         </p>
       </div>
