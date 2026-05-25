@@ -25,6 +25,19 @@ Example Output:
 
 export async function POST(req: Request) {
   try {
+    const origin = req.headers.get('origin');
+    const allowedOrigins = ['https://magic-tap-stories.vercel.app'];
+
+    const isAllowed =
+      !origin ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:') ||
+      allowedOrigins.includes(origin);
+
+    if (!isAllowed) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { emojis } = await req.json();
 
     if (!emojis || !Array.isArray(emojis) || emojis.length === 0) {
