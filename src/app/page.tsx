@@ -64,36 +64,62 @@ export default function Home() {
       <AnimatePresence>
         {selectedEmojis.length > 0 && (
           <motion.div
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            exit={{ y: 100 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-lg bg-white rounded-4xl shadow-2xl border-4 border-indigo-100 p-6 flex items-center justify-between z-50"
+            initial={{ y: 120, x: "-50%" }}
+            animate={{ y: 0, x: "-50%" }}
+            exit={{ y: 120, x: "-50%" }}
+            className="fixed bottom-6 left-1/2 w-[92%] max-w-lg bg-white rounded-3xl sm:rounded-4xl shadow-2xl border-4 border-indigo-100 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 z-50"
           >
-            <div className="flex gap-4">
-              {selectedEmojis.map((emoji, i) => (
-                <motion.span 
-                  key={`${emoji}-${i}`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1.2 }}
-                  className="text-4xl"
-                >
-                  {emoji}
-                </motion.span>
-              ))}
+            {/* Slot-based Emoji Viewer */}
+            <div className="flex gap-3 sm:gap-4 items-center justify-center flex-shrink-0">
+              {[0, 1, 2].map((index) => {
+                const emoji = selectedEmojis[index];
+                return (
+                  <div
+                    key={index}
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-50 border-2 border-dashed border-indigo-100 flex items-center justify-center relative overflow-visible flex-shrink-0"
+                  >
+                    <AnimatePresence mode="popLayout">
+                      {emoji ? (
+                        <motion.span
+                          key={emoji}
+                          initial={{ scale: 0, rotate: -20 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                          className="text-3xl sm:text-4xl select-none"
+                        >
+                          {emoji}
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="placeholder"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.25 }}
+                          exit={{ opacity: 0 }}
+                          className="text-lg sm:text-xl text-indigo-400 font-bold"
+                        >
+                          ?
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
             </div>
             
-            <div className="flex gap-3">
+            {/* Action Buttons */}
+            <div className="flex gap-3 w-full sm:w-auto items-center justify-end">
               <button 
                 onClick={clearEmojis}
                 disabled={isLoading}
-                className="px-4 py-2 text-indigo-400 font-bold hover:text-indigo-600 transition-colors disabled:opacity-30"
+                className="px-4 py-2.5 text-indigo-500 font-bold hover:text-indigo-700 transition-colors disabled:opacity-30 text-sm sm:text-base flex-1 sm:flex-none text-center"
               >
                 Clear
               </button>
               <button 
                 onClick={handleGenerate}
                 disabled={selectedEmojis.length < 3 || isLoading}
-                className="bg-indigo-500 text-white px-8 py-3 rounded-2xl font-black text-lg shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:scale-100 min-w-[120px]"
+                className="bg-indigo-500 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl font-black text-base sm:text-lg shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:scale-100 min-w-[110px] sm:min-w-[130px] flex-1 sm:flex-none text-center flex items-center justify-center"
               >
                 {isLoading ? (
                   <motion.span
