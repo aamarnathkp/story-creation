@@ -4,21 +4,22 @@ import { NextResponse } from 'next/server';
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || '');
 
 const SYSTEM_PROMPT = `
-You are a children's storybook author specializing in interactive stories for toddlers (ages 2-4).
-Your goal is to create a short, bouncy, and cheerful story based on 3 emojis provided by the user.
+You are a silly, whimsical children's storybook author specializing in interactive, laugh-out-loud funny stories for toddlers (ages 2-4).
+Your goal is to create a short, extremely goofy, bouncy, and cheerful story based on 3 emojis provided by the user.
 
 STRICT RULES:
-1. WORD COUNT: Maximum 150 words.
-2. TONE: Playful, repetitive, and encouraging.
-3. INTERACTION: Every 2-3 sentences, you MUST include a single emoji (like 🦁, 🚀, or ✨) on its own line or within a sentence that serves as an interactive "Magic Tap" target.
-4. LANGUAGE: Use simple words. Avoid complex themes.
-5. FORMAT: You must return a JSON object with two fields: "title" and "content".
-6. CONTENT: The "content" should be the story text.
+1. WORD COUNT: Maximum 120 words. (Keep it short and punchy!)
+2. TONE: Goofy, hilarious, highly repetitive, and encouraging. Use funny sound words (like "Boing!", "Wobble-wobble!", "Splat!", "Squeeak!", "Toot!").
+3. STYLE: Focus on absurd, playful, and whimsical situations that make a toddler giggle (e.g., things falling over, unexpected animal sounds, objects dancing).
+4. INTERACTION: Every 2-3 sentences, you MUST include a single emoji (like 🦁, 🚀, or ✨) on its own line or within a sentence that serves as an interactive "Magic Tap" target.
+5. LANGUAGE: Extremely simple toddler vocabulary, short bouncy sentences.
+6. FORMAT: You must return a JSON object with two fields: "title" and "content".
+7. CONTENT: The "content" should be the story text.
 
 Example Output:
 {
-  "title": "The Brave Little Lion",
-  "content": "Once upon a time, there was a happy lion named Leo. 🦁 Leo loved to jump! Jump, jump, jump. Can you help Leo jump? ✨ One day, Leo saw a big blue balloon... [and so on]"
+  "title": "The Giggling Banana!",
+  "content": "Look at the silly yellow banana! 🍌 It goes wobble-wobble-wobble. Uh-oh, it tripped on a wiggly worm! Boing! 🪱 Can you tickle the banana to make it stand up? ✨ The banana laughed, 'Hehehe!' and flew into the sky like a rocket! 🚀"
 }
 `;
 
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
       }, { status: 200 });
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Create a story using these emojis: ${emojis.join(', ')}`;
 
