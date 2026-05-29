@@ -90,6 +90,19 @@ export default function Home() {
       {/* Emoji Grid Container */}
       <EmojiGrid />
 
+      {/* Footer / Creator Link */}
+      <footer className="w-full max-w-4xl mx-auto mt-auto py-8 border-t-2 border-dashed border-indigo-100/50 text-center text-sm font-bold text-indigo-950/30 hover:text-indigo-950/50 transition-colors">
+        Made with ✨ by{' '}
+        <a
+          href="https://aamarnathkp.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-wavy decoration-indigo-200 hover:decoration-indigo-400 underline-offset-4 text-indigo-600/60 hover:text-indigo-600 transition-colors"
+        >
+          Amarnath
+        </a>
+      </footer>
+
       {/* Selection Drawer */}
       <AnimatePresence>
         {selectedEmojis.length > 0 && (
